@@ -15,11 +15,17 @@ const selectPokedexDomain = state => state.pokedex || initialState;
  * Default selector used by Pokedex
  */
 
+const makeSelectAllPokemon = () =>
+  createSelector(
+    selectPokedexDomain,
+    substate => substate.allPokemons,
+  );
+
 const makeSelectPokemon = () =>
   createSelector(
     selectPokedexDomain,
-    substate => substate.pokemonData,
+    substate => substate.pokemon,
   );
 
-export default makeSelectPokemon;
-export { selectPokedexDomain };
+// export default makeSelectPokedex;
+export { selectPokedexDomain, makeSelectAllPokemon, makeSelectPokemon};

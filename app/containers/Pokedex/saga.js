@@ -1,26 +1,44 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
-import { getPokemonErrorAction, getPokemonSuccessAction } from './actions';
+import {
+  GET_ALL_POKEMON,
+  GET_POKEMON,
+} from './constants';
+import { call, put, takeEvery } from 'redux-saga/effects';
+import {
+  getAllPokemonErrorAction,
+  getAllPokemonSuccessAction,
+  getPokemonErrorAction,
+  getPokemonSuccessAction,
+} from './actions';
 
-import { GET_POKEMON } from './constants';
-
-function* getPokemon() {
+function* getAllPokemon() {
+  const API_URL = `https://pokeapi.co/api/v2/pokemon/?limit=500`;
   try {
-    const url = 'https://pokeapi.co/api/v2/pokemon?limit=20';
-    const params = {
-      method: 'GET',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-    };
-    const pokemonData = yield call(request, url, params);
-    yield put(getPokemonSuccessAction(pokemonData));
-  }catch (err) {
-    yield put(getPokemonErrorAction(err));
+    const res = yield call(fetch, API_URL);
+    const data = yield res.json();
+    
+  
+    yield put(getAllPokemonSuccessAction(data.results));
+  } catch (err) {
+    yield put(getAllPokemonErrorAction(err));
   }
 }
 
-// Individual exports for testing
+function* getPokemon(data) {
+  
+    const {id} = data;
+    const API_URL = `https://pokeapi.co/api/v2/pokemon/${id}`;
+    try {
+      const res = yield call(fetch, API_URL);
+      const data = yield res.json();
+
+      yield put(getPokemonSuccessAction(data));
+      
+    } catch (error) {
+      yield put(getPokemonErrorAction(err));
+    }
+}
+
 export default function* pokedexSaga() {
-  yield takeLatest(GET_POKEMON, getPokemon);
-  // See example in containers/HomePage/saga.js
+  yield takeEvery(GET_ALL_POKEMON, getAllPokemon);
+  yield takeEvery(GET_POKEMON, getPokemon);
 }

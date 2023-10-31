@@ -4,84 +4,49 @@
  *
  */
 
+import React, { memo } from 'react';
 import {
-  AppBar,
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Container,
-  Dialog,
-  Grid,
-  Paper,
-  Typography
-} from '@material-ui/core';
-import React, { memo, useState } from 'react';
-import { connect, useDispatch, useSelector } from 'react-redux';
-import { makeStyles, styled } from '@material-ui/core/styles';
+  getAllPokemonAction,
+  getPokemonAction,
+} from './actions';
+import { makeSelectAllPokemon, makeSelectPokemon } from './selectors';
 
 import CenteredSection from './CenteredSection';
+import { Grid } from '@material-ui/core';
 import { Helmet } from 'react-helmet';
-import PokemonHeader from 'components/PokemonHeader';
+import PokemonList from './PokemonList';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
-import { getPokemonAction } from './actions';
-import makeSelectPokemon from './selectors';
 import reducer from './reducer';
 import saga from './saga';
+import { useEffect } from 'react';
 import { useInjectReducer } from 'utils/injectReducer';
 import { useInjectSaga } from 'utils/injectSaga';
 
-const useStyles = makeStyles({
-  BottomBtn: {
-    padding: '15px',
-    marginTop: '20px',
-    textAlign: 'center',
-    width: '100%',
-    color: '#ffffff',
-    backgroundColor: '#E73825',
-  },
-  PokemonCard: {
-    padding: '5px',
-    backgroundColor: '#ededed',
-  },
-  DialogAppBar: {
-    padding: '10px',
-    position: 'sticky',
-  },
-});
-
-const Item = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2),
-  textAlign: 'center',
-}));
-
-export function Pokedex() {
+export function Pokedex(props) {
   useInjectReducer({ key: 'pokedex', reducer });
   useInjectSaga({ key: 'pokedex', saga });
 
-  const { 
-    pokemon,
-  } = useSelector(stateSelector);
-
   const {
+    getAllPokemon,
+    allPokemons,
     getPokemon,
-  } = usePokedexDispatch();
+    pokemon,
+  } = props;
 
-  const classes = useStyles();
-
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
+  const getPokemonId = value => {
+    return value.split('/')[6];
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  useEffect(() => {
+    getAllPokemon();
+  }, []);
+
+  useEffect(() => {
+  }, [allPokemons]);
+
 
   return (
     <div>
@@ -91,118 +56,51 @@ export function Pokedex() {
       </Helmet>
 
       <CenteredSection>
-          <Grid container spacig={2}>
-            {}
-            <Grid item xs={12} sm={6} md={4} lg={3}>
-              <Card>
-                <CardActionArea 
-                className={classes.PokemonCard}
-                onClick={handleClickOpen}
-                >
-                  <CardContent>
-                    <Typography variant="h6">
-                      #00
-                    </Typography>
-                  </CardContent>
-                  <CardMedia
-                  component="img"
-                  height="200"
-                  image=" "
-                  alt="pokemon_name"
-                  />
-                  <CardContent>
-                    type-icon
-                    <Typography variant="h5">
-                      Pokemon_Name
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
+        <Grid container spacing={2}>
+          {allPokemons.map((pokemons) => (
+            <Grid item xs={12} sm={6} md={3} key={pokemons.name} >
+              <PokemonList
+                id={getPokemonId(pokemons.url)}
+                name={pokemons.name.charAt(0).toUpperCase() + pokemons.name.slice(1)}
+                getPokemon={getPokemon}
+                pokemon={pokemon}
+              // getResetPokemon={getResetPokemon}
+              />
             </Grid>
-            <Button 
-            className={classes.BottomBtn}
-            >
-              Load More
-            </Button>
-          </Grid>
-        </CenteredSection>
-
-        <Dialog 
-        fullScreen
-        open={open}
-        onClose={handleClose}>
-          <AppBar className={classes.DialogAppBar}>
-            <Container>
-              <PokemonHeader />
-            </Container>
-          </AppBar>
-          <Container>
-            <Box>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Item>
-                    <Typography>Pokemon_Name | #00</Typography>
-                  </Item>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Item>
-                    <Typography>Pokemon_Img</Typography>
-                  </Item>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Item>
-                    <Typography>Pokemon_Type/Description</Typography>
-                  </Item>
-                  <Grid container>
-                    <Grid item xs={6}>
-                      <Item>
-                        <Typography>weight</Typography>
-                      </Item>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Item>
-                        <Typography>height</Typography>
-                      </Item>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
-                  <Item>
-                    <Typography>Pokemon_Stats</Typography>
-                  </Item>
-                </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  <Item>
-                    <Typography>Pokemon_Evolution</Typography>
-                  </Item>
-                </Grid>
-              </Grid>
-              <Button 
-              className={classes.BottomBtn}
-              onClick={handleClose}>
-                Back to Pokedex
-              </Button>
-            </Box>
-          </Container>
-        </Dialog>
+          ))}
+        </Grid>
+      </CenteredSection>
     </div>
   );
-}
+};
 
-Pokedex.propTypes = {};
+Pokedex.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
 
-const stateSelector = createStructuredSelector({
+const mapStateToProps = createStructuredSelector({
+  allPokemons: makeSelectAllPokemon(),
   pokemon: makeSelectPokemon(),
 });
 
-const usePokedexDispatch =() => {
-  const dispatch = useDispatch();
-
+function mapDispatchToProps(dispatch) {
   return {
-    getPokemon: () => {
-      dispatch(getPokemonAction());
+    getAllPokemon: () => {
+      dispatch(getAllPokemonAction());
     },
+    getPokemon: id => {
+      dispatch(getPokemonAction(id));
+    },
+    dispatch,
   };
-};
+}
 
-export default memo(Pokedex);
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+export default compose(
+  withConnect,
+  memo,
+)(Pokedex);

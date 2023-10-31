@@ -11,7 +11,6 @@ import { Route, Switch } from 'react-router-dom';
 import Footer from 'components/Footer';
 import GlobalStyle from '../../global-styles';
 import { Helmet } from 'react-helmet';
-import HomePage from 'containers/HomePage/Loadable';
 import NotFoundPage from 'containers/NotFoundPage/Loadable';
 import Pokedex from 'containers/Pokedex/Loadable';
 import PokedexHeader from 'components/PokedexHeader';
@@ -38,8 +37,7 @@ export default function App() {
       </Helmet>
       <PokedexHeader />
       <Switch>
-        <Route exact path="/" component={HomePage} />
-        <Route path="/features" component={Pokedex} />
+        <Route path="/" component={Pokedex} />
         <Route path="" component={NotFoundPage} />
       </Switch>
       <Footer />

@@ -1,26 +1,14 @@
-import A from 'components/A';
-import { FormattedMessage } from 'react-intl';
-import LocaleToggle from 'containers/LocaleToggle';
 import React from 'react';
 import Wrapper from './Wrapper';
-import messages from './messages';
 
 function Footer() {
   return (
     <Wrapper>
-      <section>
-        <FormattedMessage {...messages.licenseMessage} />
+      <section variant="subtitle1">
+        This project is an exercise task.
       </section>
-      <section>
-        <LocaleToggle />
-      </section>
-      <section>
-        <FormattedMessage
-          {...messages.authorMessage}
-          values={{
-            author: <A href="https://twitter.com/mxstbr">Pola</A>,
-          }}
-        />
+      <section variant="subtitle1">
+        Made by Pola
       </section>
     </Wrapper>
   );

@@ -1,4 +1,11 @@
-import { GET_POKEMON, GET_POKEMON_SUCCESS } from './constants';
+import {
+  GET_ALL_POKEMON,
+  GET_ALL_POKEMON_ERROR,
+  GET_ALL_POKEMON_SUCCESS,
+  GET_POKEMON,
+  GET_POKEMON_ERROR,
+  GET_POKEMON_SUCCESS
+} from './constants';
 
 /*
  *
@@ -9,21 +16,31 @@ import produce from 'immer';
 
 export const initialState = {
   loading: false,
-  pokemonData: {},
+  allPokemons: [],
+  pokemon: {},
 };
 
-/* eslint-disable default-case, no-param-reassign */
 const pokedexReducer = (state = initialState, action) =>
   produce(state, draft => {
     switch (action.type) {
+      case GET_ALL_POKEMON:
+        draft.loading = true;
+        break;
+      case GET_ALL_POKEMON_SUCCESS:
+        draft.loading = false;
+        draft.allPokemons = action.allPokemons;
+        break;
+      case GET_ALL_POKEMON_ERROR:
+        draft.loading = false;
+        break;
       case GET_POKEMON:
         draft.loading = true;
         break;
       case GET_POKEMON_SUCCESS:
         draft.loading = false;
-        draft.pokemonData = action.pokemon.results.name;
+        draft.pokemon = action.data;
         break;
-      case GET_POKEMON:
+      case GET_POKEMON_ERROR:
         draft.loading = false;
         break;
     }

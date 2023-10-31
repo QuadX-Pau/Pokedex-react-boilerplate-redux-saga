@@ -13,11 +13,11 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body.fontLoaded {
-    font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
   }
 
   #app {
-    background-color: #fafafa;
+    background-color: #373737;
     min-height: 100%;
     min-width: 100%;
   }
