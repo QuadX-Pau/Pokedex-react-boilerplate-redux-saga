@@ -11,11 +11,10 @@ import {
 } from './actions';
 
 function* getAllPokemon() {
-  const API_URL = `https://pokeapi.co/api/v2/pokemon/?limit=500`;
+  const API_URL = `https://pokeapi.co/api/v2/pokemon/?limit=1001`;
   try {
     const res = yield call(fetch, API_URL);
     const data = yield res.json();
-    
   
     yield put(getAllPokemonSuccessAction(data.results));
   } catch (err) {
@@ -24,7 +23,6 @@ function* getAllPokemon() {
 }
 
 function* getPokemon(data) {
-  
     const {id} = data;
     const API_URL = `https://pokeapi.co/api/v2/pokemon/${id}`;
     try {

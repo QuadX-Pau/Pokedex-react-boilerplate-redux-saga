@@ -3,7 +3,6 @@ import * as React from 'react';
 import {
   Box,
   Button,
-  CircularProgress,
   Dialog,
   DialogContent,
   Grid,
@@ -86,6 +85,10 @@ function PokemonDetails({ open, onClose, name, pokemon, loading }) {
             <Grid container spacing={2} >
               <Grid item xs={12} md={6}>
                 <PokemonHeader />
+                {/* <img
+                src={pokemon.sprites.front_default}
+                alt={name}
+                /> */}
                 <Typography variant="h4">
                   • {name} •
                 </Typography>
@@ -93,7 +96,7 @@ function PokemonDetails({ open, onClose, name, pokemon, loading }) {
                   <Typography variant="body2">
                     {pokemon.base_experience}XP
                   </Typography>
-                  <XP variant="determinate" value={pokemon.base_experience / 3} />
+                  <XP variant="determinate" value={pokemon.base_experience / 10} />
                 </div>
                 <Item style={{ margin: '20px auto', }}>
                   <Grid container spacing={2}>

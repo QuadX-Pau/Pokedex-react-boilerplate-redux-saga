@@ -51,10 +51,9 @@ function PokemonList({ id, name, getPokemon, pokemon }) {
         <CardActionArea
           className={classes.pokemonCard}
           onClick={() => {
-            handleClickOpen();
             setLoading(true);
             getPokemon(id);
-            console.log(pokemon);
+            handleClickOpen();
           }}
         >
           <CardContent>
